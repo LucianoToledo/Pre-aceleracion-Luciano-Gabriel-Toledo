@@ -5,20 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 @Table(name = "CHARACTERS")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Character {
+public class CharacterEntity {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name = "character_id")
     private String id;
 
     @Column(name = "name", nullable = false)
@@ -35,6 +35,10 @@ public class Character {
 
     @Column(name = "image")
     private String image;
+
+    @ManyToMany(mappedBy = "characters",cascade = CascadeType.ALL)
+    private List<MovieEntity> movies = new ArrayList<>();
+
     @Column(name = "soft_delete", nullable = false)
     private Boolean softDelete = false;
 
