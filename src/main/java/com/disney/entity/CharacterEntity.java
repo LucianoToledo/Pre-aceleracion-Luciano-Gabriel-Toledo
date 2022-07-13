@@ -1,4 +1,4 @@
-package com.disney.model.entity;
+package com.disney.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,28 +6,38 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "GENRE")
+@Table(name = "CHARACTERS")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenreEntity {
-
+public class CharacterEntity {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "age")
+    private int age;
+
+    @Column(name = "weight")
+    private Float weight;
+
+    @Column(name = "history", nullable = false)
+    private String history;
+
+    @Column(name = "image")
     private String image;
 
-    @Column(name = "movie_id", nullable = false)
-    private String movieId;
+    @ManyToMany(mappedBy = "characters",cascade = CascadeType.ALL)
+    private List<MovieEntity> movies = new ArrayList<>();
 
     @Column(name = "soft_delete", nullable = false)
     private Boolean softDelete = false;

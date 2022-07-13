@@ -1,4 +1,4 @@
-package com.disney.model.entity;
+package com.disney.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
