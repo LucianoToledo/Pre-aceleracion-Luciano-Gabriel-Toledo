@@ -32,7 +32,6 @@ public class CharacterServiceImpl implements ICharaterService {
         return characterMapper.map(characterRepository.save(characterMapper.mapUpdate(request, getByIdAndSoftDeleteFalse(request.getId()))));
     }
 
-    @Override
     @Transactional(rollbackFor = {Exception.class})
     public void enableCharacter(String id) throws Exception {
         CharacterEntity character =characterRepository.findByCharacterId(id);
@@ -46,10 +45,9 @@ public class CharacterServiceImpl implements ICharaterService {
     @Override
     @Transactional(rollbackFor = {Exception.class})
     public void disableCharacter(String id) throws Exception {
-        System.out.println("disable ----------->"+id);
-        CharacterEntity character = characterRepository.findByCharacterId(id);
+        CharacterEntity character =characterRepository.findByCharacterId(id);
         if (!character.isEnabled()) {
-            throw new Exception("character is already disable");
+            throw new Exception("character is already enable");
         }
         character.setSoftDelete(true);
         characterRepository.save(character);

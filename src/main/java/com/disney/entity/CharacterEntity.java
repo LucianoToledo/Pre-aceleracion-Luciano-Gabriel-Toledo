@@ -3,15 +3,16 @@ package com.disney.entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "CHARACTERS")
+@Table(name = "characters")
 @Getter
 @Setter
-public class CharacterEntity {
+public class   CharacterEntity {
 
     @Id
     @GeneratedValue(generator = "uuid")
