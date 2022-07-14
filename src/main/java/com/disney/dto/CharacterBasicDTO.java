@@ -5,8 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GenreDTO {
-    private String id;
+public class CharacterBasicDTO {
     private String name;
+    private Integer age;
+    private Float weight;
+    private String history;
     private String image;
 }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,8 +17,8 @@ import java.util.Set;
 @Table(name = "MOVIE")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@SQLDelete(sql="UPDATE genre SET soft_delete = true WHERE id=?")
+@Where(clause = "soft_delete=false")
 public class MovieEntity {
     @Id
     @GeneratedValue(generator = "uuid")
@@ -31,7 +33,7 @@ public class MovieEntity {
     private LocalDate creationDate;
 
     @Column(nullable = false)
-    private String ranking;
+    private Integer ranking;
 
     private String image;
 

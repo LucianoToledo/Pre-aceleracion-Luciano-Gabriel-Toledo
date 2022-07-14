@@ -1,8 +1,6 @@
 package com.disney.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
@@ -13,19 +11,18 @@ import java.util.List;
 @Table(name = "CHARACTERS")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class CharacterEntity {
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    private String characterId;
 
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
     @Column(name = "weight")
     private Float weight;
