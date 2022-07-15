@@ -1,8 +1,6 @@
 package com.disney.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
@@ -17,9 +15,8 @@ import java.util.Set;
 @Table(name = "MOVIE")
 @Getter
 @Setter
-@SQLDelete(sql="UPDATE genre SET soft_delete = true WHERE id=?")
-@Where(clause = "soft_delete=false")
 public class MovieEntity {
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -54,5 +51,4 @@ public class MovieEntity {
     public boolean isEnabled() {
         return !softDelete;
     }
-
 }

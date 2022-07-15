@@ -1,12 +1,14 @@
 package com.disney.controller;
 
-import com.disney.dto.CharacterBasicDTO;
-import com.disney.dto.CharacterDTO;
+import com.disney.dto.request.CharacterRequest;
+import com.disney.dto.response.CharacterResponse;
 import com.disney.service.ICharaterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/character")
@@ -15,16 +17,15 @@ public class CharacterController {
     @Autowired
     ICharaterService iCharaterService;
 
+
     @PostMapping("/save")
-    public ResponseEntity<CharacterDTO> save(@RequestBody CharacterBasicDTO request) {
-        CharacterDTO response = iCharaterService.save(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<CharacterResponse> save(@RequestBody CharacterRequest request) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(iCharaterService.save(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<CharacterDTO> update(@RequestBody CharacterDTO request) {
-        CharacterDTO response = iCharaterService.update(request);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+    public ResponseEntity<CharacterResponse> update(@RequestBody CharacterRequest request) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(iCharaterService.update(request));
     }
 
     @PutMapping("/enable/{id}")
@@ -38,6 +39,12 @@ public class CharacterController {
         iCharaterService.disableCharacter(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<CharacterResponse>> getAll(){
+        return ResponseEntity.ok().body(iCharaterService.getAll());
+    }
+
 
 }
 

@@ -3,7 +3,6 @@ package com.disney.entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.SQLDelete;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +11,12 @@ import java.util.List;
 @Table(name = "characters")
 @Getter
 @Setter
-public class   CharacterEntity {
+public class CharacterEntity {
 
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String characterId;
+    private String id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -41,5 +40,4 @@ public class   CharacterEntity {
     private Boolean softDelete = false;
 
     public boolean isEnabled() { return !softDelete; }
-
 }

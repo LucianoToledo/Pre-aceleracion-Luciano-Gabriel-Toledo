@@ -1,10 +1,22 @@
 package com.disney.service;
 
-import com.disney.dto.GenreDTO;
+import com.disney.dto.request.GenreRequest;
+import com.disney.dto.request.GenreRequest;
+import com.disney.dto.response.GenreResponse;
+import com.disney.dto.response.GenreResponse;
+import com.disney.entity.GenreEntity;
+
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 public interface IGenreService {
-    GenreDTO save(GenreDTO request);
+    GenreResponse save(GenreRequest request);
 
-    List<GenreDTO> getAllGenres();
+    GenreResponse update(GenreRequest request) throws Exception;
+    void enableGenre(String id) throws Exception;
+    void disableGenre(String id) throws Exception;
+    GenreEntity getByIdAndSoftDeleteFalse(String id) throws Exception;
+
+    GenreEntity getById(String id) throws Exception;
+    List<GenreResponse> getAllGenres();
 }

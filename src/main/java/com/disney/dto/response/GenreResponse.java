@@ -1,13 +1,12 @@
-package com.disney.dto;
+package com.disney.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class MovieDTO {
+public class GenreResponse {
     private String id;
-    private String tittle;
-    private Integer ranking;
+    private String name;
     private String image;
 }
