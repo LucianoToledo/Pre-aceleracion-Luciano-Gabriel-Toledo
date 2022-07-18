@@ -16,7 +16,7 @@ import java.util.List;
 public class MovieMapper {
 
     @Autowired
-   static CharacterMapper characterMapper;
+    static CharacterMapper characterMapper;
 
     public MovieEntity map(MovieRequest request) {
         MovieEntity entity = new MovieEntity();
@@ -50,13 +50,14 @@ public class MovieMapper {
         }
         return responses;
     }
-//
+
+    //
     public MovieResponse map(MovieEntity entity, boolean loadCharacter) {
         MovieResponse response = map(entity);
         if (loadCharacter) {
             List<CharacterEntity> characterEntities = new ArrayList<>(entity.getCharacters());
             List<CharacterResponse> characterResponses =
-                    this.characterMapper.map((characterEntities), false);
+                    characterMapper.map((characterEntities), false);
             response.setCharacterResponse(characterResponses);
         }
         return response;
