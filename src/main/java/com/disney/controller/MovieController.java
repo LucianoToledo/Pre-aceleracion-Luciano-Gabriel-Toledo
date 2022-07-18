@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/movie")
@@ -40,7 +41,17 @@ public class MovieController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<MovieResponse>> getAll(){
+    public ResponseEntity<List<MovieResponse>> getAll() {
         return ResponseEntity.ok().body(iMovieService.getAll());
     }
+
+//    @GetMapping
+//    public ResponseEntity<List<MovieResponse>> getDetailsByFilters(
+//            @RequestParam(required = false) String title,
+//            @RequestParam(required = false) String date,
+//            @RequestParam(required = false) Set<String> characters,
+//            @RequestParam(required = false, defaultValue = "ASC") String order) {
+//        List<MovieResponse> responses = iMovieService.getByFilters(title, date, characters, order);
+//        return ResponseEntity.ok(responses);
+//    }
 }

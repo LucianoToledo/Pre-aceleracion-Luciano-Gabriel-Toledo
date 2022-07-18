@@ -1,10 +1,12 @@
 package com.disney.service.impl;
 
+import com.disney.dto.request.MovieFiltersRequest;
 import com.disney.dto.request.MovieRequest;
 import com.disney.dto.response.MovieResponse;
 import com.disney.entity.MovieEntity;
 import com.disney.mapper.MovieMapper;
 import com.disney.repository.MovieRepository;
+import com.disney.repository.specifications.MovieSpecification;
 import com.disney.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class MovieServiceImpl implements IMovieService {
@@ -22,6 +25,9 @@ public class MovieServiceImpl implements IMovieService {
 
     @Autowired
     MovieRepository movieRepository;
+
+    @Autowired
+    MovieSpecification movieSpecification;
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
@@ -86,6 +92,14 @@ public class MovieServiceImpl implements IMovieService {
     @Transactional(readOnly = true)
     public List<MovieResponse> getAll() {
         return movieMapper.map(movieRepository.findAll());
+    }
+
+    @Override
+    public List<MovieResponse> getByFilters(String name, String date, Set<String> characters, String order) {
+        MovieFiltersRequest movieFiltersRequest = new MovieFiltersRequest(name, date, characters, order);
+        List<MovieEntity> entities = movieRepository.findAll(movieSpecification.getByFilters(movieFiltersRequest));
+        List<MovieResponse> responses = movieMapper.map(entities, true);
+        return responses;
     }
 
     private void validateRequest(MovieRequest request) throws Exception {

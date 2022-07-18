@@ -6,15 +6,23 @@ import com.disney.entity.MovieEntity;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Set;
 
 public interface IMovieService {
-    
+
     MovieResponse save(MovieRequest request) throws Exception;
+
     MovieResponse update(MovieRequest request);
+
     void enableMovie(String id) throws Exception;
+
     void disableMovie(String id) throws Exception;
+
     MovieEntity getByIdAndSoftDeleteFalse(String id) throws EntityNotFoundException;
 
     MovieEntity getById(String id) throws EntityNotFoundException;
+
     List<MovieResponse> getAll();
+
+    List<MovieResponse> getByFilters(String name, String date, Set<String> characters, String order);
 }
