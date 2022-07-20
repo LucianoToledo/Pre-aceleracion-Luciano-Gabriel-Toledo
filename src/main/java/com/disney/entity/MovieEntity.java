@@ -3,8 +3,6 @@ package com.disney.entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -27,7 +25,7 @@ public class MovieEntity {
 
     @Column(name = "creation_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private LocalDate creationDate;
+    private LocalDate creationDate = LocalDate.now();
 
     @Column(nullable = false)
     private Integer ranking;

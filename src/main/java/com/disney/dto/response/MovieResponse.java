@@ -12,5 +12,5 @@ public class MovieResponse {
     private String tittle;
     private Integer ranking;
     private String image;
-    private List<CharacterResponse> characterResponse;
+    private List<CharacterResponse> characterResponseList;
 }

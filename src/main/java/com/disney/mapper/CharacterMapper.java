@@ -25,7 +25,7 @@ public class CharacterMapper {
         return entity;
     }
 
-    public CharacterResponse map(CharacterEntity entity, List<MovieResponse> movies) { //entity to responseDto
+    public CharacterResponse map(CharacterEntity entity, List<MovieResponse> movies) {
         CharacterResponse response = new CharacterResponse();
         response.setId(entity.getId());
         response.setName(entity.getName());

@@ -6,21 +6,21 @@ import com.disney.dto.response.MovieResponse;
 import com.disney.entity.CharacterEntity;
 import com.disney.entity.MovieEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class MovieMapper {
 
+    @Lazy
     @Autowired
-    static CharacterMapper characterMapper;
+    CharacterMapper characterMapper;
 
     public MovieEntity map(MovieRequest request) {
         MovieEntity entity = new MovieEntity();
-        entity.setTitle(request.getTittle());
+        entity.setTitle(request.getTitle());
         entity.setRanking(request.getRanking());
         entity.setImage(request.getImage());
         return entity;
@@ -31,7 +31,17 @@ public class MovieMapper {
         response.setId(entity.getId());
         response.setTittle(entity.getTitle());
         response.setRanking(entity.getRanking());
+        response.setImage(entity.getImage());
+        return response;
+    }
+
+    public MovieResponse mapp(MovieEntity entity, List<CharacterResponse> characterEntityList) {
+        MovieResponse response = new MovieResponse();
+        response.setId(entity.getId());
+        response.setTittle(entity.getTitle());
+        response.setRanking(entity.getRanking());
         response.setImage(response.getImage());
+        response.setCharacterResponseList(characterEntityList);
         return response;
     }
 
@@ -56,9 +66,8 @@ public class MovieMapper {
         MovieResponse response = map(entity);
         if (loadCharacter) {
             List<CharacterEntity> characterEntities = new ArrayList<>(entity.getCharacters());
-            List<CharacterResponse> characterResponses =
-                    characterMapper.map((characterEntities), false);
-            response.setCharacterResponse(characterResponses);
+            List<CharacterResponse> characterResponses = characterMapper.map(characterEntities, false);
+            response.setCharacterResponseList(characterResponses);
         }
         return response;
     }

@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/movie")
@@ -45,6 +43,14 @@ public class MovieController {
         return ResponseEntity.ok().body(iMovieService.getAll());
     }
 
+    @PostMapping("/addCharacter/{idVideo}/character/{idCharacter}")
+    public ResponseEntity<MovieResponse> addCharacters(@PathVariable String idVideo, @PathVariable String idCharacter) throws Exception {
+        return ResponseEntity.ok().body(iMovieService.addCharacter(idVideo, idCharacter));
+    }
+    @DeleteMapping("/removeCharacter/{idVideo}/character/{idCharacter}")
+    public ResponseEntity<MovieResponse> removeCharacter(@PathVariable String idVideo, @PathVariable String idCharacter) throws Exception {
+        return ResponseEntity.ok().body(iMovieService.removeCharacter(idVideo, idCharacter));
+    }
 //    @GetMapping
 //    public ResponseEntity<List<MovieResponse>> getDetailsByFilters(
 //            @RequestParam(required = false) String title,

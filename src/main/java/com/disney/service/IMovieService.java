@@ -3,7 +3,6 @@ package com.disney.service;
 import com.disney.dto.request.MovieRequest;
 import com.disney.dto.response.MovieResponse;
 import com.disney.entity.MovieEntity;
-
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Set;
@@ -25,4 +24,8 @@ public interface IMovieService {
     List<MovieResponse> getAll();
 
     List<MovieResponse> getByFilters(String name, String date, Set<String> characters, String order);
+
+    MovieResponse addCharacter(String idMovie, String idCharacter) throws Exception;
+
+   MovieResponse removeCharacter(String idMovie, String idCharacter) throws Exception;
 }
