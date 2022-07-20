@@ -31,7 +31,7 @@ public class MovieSpecification {
             if (StringUtils.hasLength(filtersRequest.getDate())) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate date = LocalDate.parse(filtersRequest.getDate(), formatter);
-                predicates.add(criteriaBuilder.equal(root.get("creationDate"), date));
+                predicates.add(criteriaBuilder.equal(root.<LocalDate>get("creationDate"), date));
             }
 
             if (!CollectionUtils.isEmpty(filtersRequest.getCharacters())) {

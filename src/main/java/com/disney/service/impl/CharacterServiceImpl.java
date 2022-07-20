@@ -84,6 +84,10 @@ public class CharacterServiceImpl implements ICharaterService {
         return opt.get();
     }
 
+    public List<CharacterResponse> getCharactersByMovie(Set<CharacterEntity> characterEntitySet){
+        List<CharacterEntity> responseList = new ArrayList<>(characterEntitySet);
+        return characterMapper.map(responseList);
+    }
 
     @Override
     @Transactional(rollbackFor = {Exception.class})

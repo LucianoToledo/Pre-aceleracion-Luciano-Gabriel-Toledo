@@ -6,15 +6,12 @@ import com.disney.dto.response.MovieResponse;
 import com.disney.entity.CharacterEntity;
 import com.disney.entity.MovieEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
 public class MovieMapper {
-
-    @Lazy
     @Autowired
     CharacterMapper characterMapper;
 
@@ -35,7 +32,7 @@ public class MovieMapper {
         return response;
     }
 
-    public MovieResponse mapp(MovieEntity entity, List<CharacterResponse> characterEntityList) {
+    public MovieResponse map(MovieEntity entity, List<CharacterResponse> characterEntityList) {
         MovieResponse response = new MovieResponse();
         response.setId(entity.getId());
         response.setTittle(entity.getTitle());

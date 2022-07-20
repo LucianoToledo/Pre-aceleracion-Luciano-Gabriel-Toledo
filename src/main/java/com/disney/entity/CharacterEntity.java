@@ -33,7 +33,7 @@ public class CharacterEntity {
     @Column(name = "image")
     private String image;
 
-    @ManyToMany(mappedBy = "characters",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "characters",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MovieEntity> movies = new ArrayList<>();
 
     @Column(name = "soft_delete", nullable = false)

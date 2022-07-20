@@ -2,6 +2,7 @@ package com.disney.service.impl;
 
 import com.disney.dto.request.MovieFiltersRequest;
 import com.disney.dto.request.MovieRequest;
+import com.disney.dto.response.CharacterResponse;
 import com.disney.dto.response.MovieResponse;
 import com.disney.entity.CharacterEntity;
 import com.disney.entity.MovieEntity;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -99,10 +101,10 @@ public class MovieServiceImpl implements IMovieService {
     }
 
     @Override
-    public List<MovieResponse> getByFilters(String name, String date, Set<String> characters, String order) {
+    public List<MovieResponse> getByFilters(String name, String date, List<String> characters, String order) {
         MovieFiltersRequest movieFiltersRequest = new MovieFiltersRequest(name, date, characters, order);
-        List<MovieEntity> entities = movieRepository.findAll(movieSpecification.getByFilters(movieFiltersRequest));
-        return movieMapper.map(entities, true);
+        List<MovieEntity> entities = movieRepository.findAll(this.movieSpecification.getByFilters(movieFiltersRequest));
+        return this.movieMapper.map(entities, true);
 
     }
 
@@ -132,13 +134,19 @@ public class MovieServiceImpl implements IMovieService {
         return movieMapper.map(movieRepository.save(movie), true);
     }
 
+    public List<MovieResponse> findByTitle(String title) throws EntityNotFoundException{
+        return movieMapper.map(movieRepository.findByTitleAndSoftDeleteFalse(title));
+    }
+
+
+
     private void validateRequest(MovieRequest request) throws Exception {
         if (movieRepository.findByTitle(request.getTitle()) != null) {
             throw new Exception("Tittle is already in use");
         }
     }
 }
-//    @Override  //este funca pero lo pide por pathvariable, no por json
+//    @Override  //esto funciona pero lo pide por pathvariable, no por json
 //    @Transactional
 //    public MovieResponse addCharacters(AddCharacter2Movie request) throws EntityNotFoundException {
 //        MovieEntity movie = getByIdAndSoftDeleteFalse(request.getIdMovie());

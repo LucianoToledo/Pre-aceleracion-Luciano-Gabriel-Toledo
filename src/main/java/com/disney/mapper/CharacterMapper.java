@@ -13,7 +13,7 @@ import java.util.List;
 public class CharacterMapper {
 
     @Autowired
-    MovieMapper movieMapper;
+    static MovieMapper movieMapper;
 
     public CharacterEntity map(CharacterRequest request) { //requestBasic to entityDto
         CharacterEntity entity = new CharacterEntity();
