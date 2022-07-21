@@ -9,10 +9,11 @@ import com.disney.service.ICharaterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CharacterServiceImpl implements ICharaterService {
@@ -83,6 +84,10 @@ public class CharacterServiceImpl implements ICharaterService {
         return opt.get();
     }
 
+    public List<CharacterResponse> getCharactersByMovie(Set<CharacterEntity> characterEntitySet){
+        List<CharacterEntity> responseList = new ArrayList<>(characterEntitySet);
+        return characterMapper.map(responseList);
+    }
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
@@ -100,5 +105,12 @@ public class CharacterServiceImpl implements ICharaterService {
         if (request.getWeight() <= 0) {
             throw new Exception("Weight cannot be less than or equal to zero");
         }
+    }
+    public List<CharacterResponse> set2list(Set<CharacterEntity> characterEntitySet){
+        List<CharacterResponse> characterResponseList = new ArrayList<>();
+        for (CharacterEntity entity: characterEntitySet) {
+            characterResponseList.add(characterMapper.map(entity));
+        }
+        return characterResponseList;
     }
 }

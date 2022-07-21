@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class MovieRequest {
     private String id;
-    private String tittle;
+    private String title;
     private Integer ranking;
     private String image;
 }

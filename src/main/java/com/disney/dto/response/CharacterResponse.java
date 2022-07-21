@@ -15,5 +15,5 @@ public class CharacterResponse {
     private Float weight;
     private String history;
     private String image;
-    private List<MovieEntity> movies;
+    private List<MovieResponse> movies;
 }
