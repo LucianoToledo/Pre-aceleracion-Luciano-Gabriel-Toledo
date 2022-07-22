@@ -1,6 +1,7 @@
 package com.disney.service;
 
 import com.disney.dto.request.CharacterRequest;
+import com.disney.dto.response.CharacterBasicResponse;
 import com.disney.dto.response.CharacterResponse;
 import com.disney.entity.CharacterEntity;
 
@@ -20,4 +21,9 @@ public interface ICharaterService {
     CharacterEntity getById(String id) throws EntityNotFoundException;
 
     List<CharacterResponse> getAll();
+
+    List<CharacterBasicResponse> getByName(String name);
+    List<CharacterBasicResponse> getByAge(String age);
+    List<CharacterBasicResponse> getByMovieId(String age);
+
 }

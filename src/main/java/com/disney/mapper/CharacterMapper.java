@@ -1,11 +1,14 @@
 package com.disney.mapper;
 
 import com.disney.dto.request.CharacterRequest;
+import com.disney.dto.response.CharacterBasicResponse;
 import com.disney.dto.response.CharacterResponse;
 import com.disney.dto.response.MovieResponse;
 import com.disney.entity.CharacterEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.xml.stream.events.Characters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,10 +70,24 @@ public class CharacterMapper {
     public CharacterResponse map(CharacterEntity entity, boolean loadMovies){
         CharacterResponse response = map(entity);
         if (loadMovies){
-            List<MovieResponse> movieResponses = this.movieMapper.map(entity.getMovies(),false);
+            List<MovieResponse> movieResponses = movieMapper.map(entity.getMovies(),false);
             response.setMovies(movieResponses);
         }
         return response;
     }
 
+    public CharacterBasicResponse mapBasic(CharacterEntity entity){
+        CharacterBasicResponse response = new CharacterBasicResponse();
+        response.setName(entity.getName());
+        response.setImage(entity.getImage());
+        return response;
+    }
+
+    public List<CharacterBasicResponse> mapBasic(List<CharacterEntity> entityList){
+        List<CharacterBasicResponse> responseList = new ArrayList<>();
+        for (CharacterEntity entity:entityList) {
+            responseList.add(mapBasic(entity));
+        }
+        return responseList;
+    }
 }

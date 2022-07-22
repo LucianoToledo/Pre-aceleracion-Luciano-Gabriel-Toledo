@@ -2,9 +2,9 @@ package com.disney.service.impl;
 
 import com.disney.dto.request.MovieFiltersRequest;
 import com.disney.dto.request.MovieRequest;
-import com.disney.dto.response.CharacterResponse;
 import com.disney.dto.response.MovieResponse;
 import com.disney.entity.CharacterEntity;
+import com.disney.entity.GenreEntity;
 import com.disney.entity.MovieEntity;
 import com.disney.mapper.MovieMapper;
 import com.disney.repository.MovieRepository;
@@ -13,9 +13,7 @@ import com.disney.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -34,6 +32,9 @@ public class MovieServiceImpl implements IMovieService {
 
     @Autowired
     CharacterServiceImpl characterService;
+
+    @Autowired
+    GenreServiceImpl genreService;
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
@@ -138,6 +139,13 @@ public class MovieServiceImpl implements IMovieService {
         return movieMapper.map(movieRepository.findByTitleAndSoftDeleteFalse(title));
     }
 
+    @Override
+    @Transactional
+    public MovieResponse addGenre(String idMovie, String idGenre) throws Exception {
+        MovieEntity movie = getByIdAndSoftDeleteFalse(idMovie);
+        movie.setGenre(genreService.getByIdAndSoftDeleteFalse(idGenre));
+        return movieMapper.map(movieRepository.save(movie));
+    }
 
 
     private void validateRequest(MovieRequest request) throws Exception {

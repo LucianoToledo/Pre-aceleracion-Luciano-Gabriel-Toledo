@@ -1,6 +1,7 @@
 package com.disney.controller;
 
 import com.disney.dto.request.CharacterRequest;
+import com.disney.dto.response.CharacterBasicResponse;
 import com.disney.dto.response.CharacterResponse;
 import com.disney.service.ICharaterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,24 @@ public class CharacterController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<CharacterResponse>> getAll(){
+    @GetMapping
+    public ResponseEntity<List<CharacterResponse>> getAll() {
         return ResponseEntity.ok().body(iCharaterService.getAll());
+    }
+
+    @GetMapping("/name")
+    public ResponseEntity<List<CharacterBasicResponse>> getByName(@RequestParam String name) {
+        return ResponseEntity.ok().body(iCharaterService.getByName(name));
+    }
+
+    @GetMapping("/age")
+    public ResponseEntity<List<CharacterBasicResponse>> getByAge(@RequestParam String age) {
+        return ResponseEntity.ok().body(iCharaterService.getByAge(age));
+    }
+
+    @GetMapping("/movieId")
+    public ResponseEntity<List<CharacterBasicResponse>> getByMovieId(@RequestParam String movieId) {
+        return ResponseEntity.ok().body(iCharaterService.getByMovieId(movieId));
     }
 
 

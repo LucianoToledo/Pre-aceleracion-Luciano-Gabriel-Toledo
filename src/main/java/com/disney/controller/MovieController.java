@@ -56,6 +56,11 @@ public class MovieController {
     public ResponseEntity<List<MovieResponse>> getByTitle(@RequestParam String title){
         return ResponseEntity.ok().body(iMovieService.findByTitle(title));
     }
+
+    @PostMapping("/addGenre/{idVideo}/genre/{idGenre}")
+    public ResponseEntity<MovieResponse> addGenre(@PathVariable String idVideo, @PathVariable String idGenre) throws Exception {
+        return ResponseEntity.ok().body(iMovieService.addGenre(idVideo, idGenre));
+    }
 //    @GetMapping
 //    public ResponseEntity<List<MovieResponse>> getDetailsByFilters(
 //            @RequestParam(required = false) String title,

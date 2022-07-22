@@ -41,7 +41,7 @@ public class MovieEntity {
     private Set<CharacterEntity> characters = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "genre_id", insertable = false, updatable = false)
+    @JoinColumn(name = "genre_id", insertable = false)
     private GenreEntity genre;
     @Column(name = "soft_delete", nullable = false)
     private Boolean softDelete = false;
