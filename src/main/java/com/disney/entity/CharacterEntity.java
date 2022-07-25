@@ -1,8 +1,6 @@
-package com.disney.model.entity;
+package com.disney.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
@@ -10,12 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "CHARACTERS")
+@Table(name = "characters")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class CharacterEntity {
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -25,7 +22,7 @@ public class CharacterEntity {
     private String name;
 
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
     @Column(name = "weight")
     private Float weight;
@@ -36,12 +33,11 @@ public class CharacterEntity {
     @Column(name = "image")
     private String image;
 
-    @ManyToMany(mappedBy = "characters",cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "characters",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MovieEntity> movies = new ArrayList<>();
 
     @Column(name = "soft_delete", nullable = false)
     private Boolean softDelete = false;
 
     public boolean isEnabled() { return !softDelete; }
-
 }

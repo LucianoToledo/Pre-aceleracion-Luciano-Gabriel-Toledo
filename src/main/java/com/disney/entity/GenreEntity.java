@@ -1,18 +1,21 @@
-package com.disney.model.entity;
+package com.disney.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "GENRE")
+@Table(name = "genre")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@SQLDelete(sql="UPDATE genre SET soft_delete = true WHERE id=?")
+@Where(clause = "soft_delete=false")
 public class GenreEntity {
 
     @Id
@@ -25,9 +28,6 @@ public class GenreEntity {
 
     @Column(nullable = false)
     private String image;
-
-    @Column(name = "movie_id", nullable = false)
-    private String movieId;
 
     @Column(name = "soft_delete", nullable = false)
     private Boolean softDelete = false;

@@ -1,8 +1,6 @@
-package com.disney.model.entity;
+package com.disney.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,9 +13,8 @@ import java.util.Set;
 @Table(name = "MOVIE")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class MovieEntity {
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -28,16 +25,16 @@ public class MovieEntity {
 
     @Column(name = "creation_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private LocalDate creationDate;
+    private LocalDate creationDate = LocalDate.now();
 
     @Column(nullable = false)
-    private String ranking;
+    private Integer ranking;
 
     private String image;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
-            CascadeType.MERGE})
+            CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "movie_character",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "character_id"))
@@ -46,11 +43,13 @@ public class MovieEntity {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "genre_id", insertable = false, updatable = false)
     private GenreEntity genre;
+
+    @Column(name = "genre_id")
+    private String genreId;
     @Column(name = "soft_delete", nullable = false)
     private Boolean softDelete = false;
 
     public boolean isEnabled() {
         return !softDelete;
     }
-
 }
