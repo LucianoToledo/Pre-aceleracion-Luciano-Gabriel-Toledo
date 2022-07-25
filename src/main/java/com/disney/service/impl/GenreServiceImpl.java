@@ -3,13 +3,13 @@ package com.disney.service.impl;
 import com.disney.dto.request.GenreRequest;
 import com.disney.dto.response.GenreResponse;
 import com.disney.entity.GenreEntity;
-import com.disney.entity.GenreEntity;
 import com.disney.mapper.GenreMapper;
 import com.disney.repository.GenreRepository;
 import com.disney.service.IGenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +74,15 @@ public class GenreServiceImpl implements IGenreService {
 
     public List<GenreResponse> getAllGenres() {
         return genreMapper.map(genreRepository.findAll());
+    }
+
+    @Override
+    public GenreEntity getByNameAndSoftDeleteFalse(String name) {
+        Optional<GenreEntity> opt = Optional.ofNullable(genreRepository.findByNameAndSoftDeleteFalse(name));
+        if (opt.isEmpty()){
+            throw new EntityNotFoundException("Genre not found or disable");
+        }
+        return opt.get();
     }
 
 }

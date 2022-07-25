@@ -19,4 +19,6 @@ public interface IGenreService {
 
     GenreEntity getById(String id) throws Exception;
     List<GenreResponse> getAllGenres();
+
+    GenreEntity getByNameAndSoftDeleteFalse(String genreName);
 }

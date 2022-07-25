@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CharacterBasicResponse {
-    private String name;
+public class MovieBasicResponse {
+    private String tittle;
+    private String creationDate;
     private String image;
-    private String age;
 }

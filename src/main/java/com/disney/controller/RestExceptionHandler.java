@@ -1,7 +1,7 @@
 package com.disney.controller;
 
 import com.disney.dto.response.ApiErrorResponse;
-import com.disney.exception.ParamNotFound;
+import com.disney.exception.EntityNotFound;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,12 +19,12 @@ import java.util.List;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {ParamNotFound.class})
+    @ExceptionHandler(value = {EntityNotFound.class})
     protected ResponseEntity<Object> handleParamNotFound(RuntimeException ex, WebRequest request) {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
-                Arrays.asList("Param Not Found"));
+                Arrays.asList("Entity Not Found or Disabled"));
         return handleExceptionInternal(ex, apiErrorResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 

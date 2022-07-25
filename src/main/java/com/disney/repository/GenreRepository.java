@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface GenreRepository extends JpaRepository<GenreEntity, String> {
+    GenreEntity findByNameAndSoftDeleteFalse(String name);
     GenreEntity findByIdAndSoftDeleteFalse(String id);
 }

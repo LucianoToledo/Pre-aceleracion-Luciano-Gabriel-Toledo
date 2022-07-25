@@ -1,11 +1,13 @@
 package com.disney.service.impl;
 
-import com.disney.dto.request.MovieFiltersRequest;
 import com.disney.dto.request.MovieRequest;
+import com.disney.dto.response.GenreResponse;
+import com.disney.dto.response.MovieBasicResponse;
 import com.disney.dto.response.MovieResponse;
 import com.disney.entity.CharacterEntity;
-import com.disney.entity.GenreEntity;
 import com.disney.entity.MovieEntity;
+import com.disney.exception.EntityNotFound;
+import com.disney.mapper.GenreMapper;
 import com.disney.mapper.MovieMapper;
 import com.disney.repository.MovieRepository;
 import com.disney.repository.specifications.MovieSpecification;
@@ -13,10 +15,9 @@ import com.disney.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class MovieServiceImpl implements IMovieService {
@@ -36,21 +37,34 @@ public class MovieServiceImpl implements IMovieService {
     @Autowired
     GenreServiceImpl genreService;
 
+    @Autowired
+    GenreMapper genreMapper;
+
     @Override
     @Transactional(rollbackFor = {Exception.class})
     public MovieResponse save(MovieRequest request) throws Exception {
         validateRequest(request);
-        return movieMapper.map(movieRepository.save(movieMapper.map(request)));
+        MovieEntity entity = movieMapper.map(request);
+        entity.setCharacters(addCharacters(request.getIdCharacters()));
+        return movieMapper.map(movieRepository.save(entity), true, false);
+    }
+
+    private Set<CharacterEntity> addCharacters(List<String> charactersId) {
+        Set<CharacterEntity> characterEntities = new HashSet<>();
+        for (String aux : charactersId) {
+            characterEntities.add(characterService.getByIdAndSoftDeleteFalse(aux));
+        }
+        return characterEntities;
     }
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public MovieResponse update(MovieRequest request) {
+    public MovieResponse update(MovieRequest request) throws Exception {
         MovieEntity entity = getByIdAndSoftDeleteFalse(request.getId());
         entity.setTitle(request.getTitle());
         entity.setRanking(request.getRanking());
         entity.setImage(request.getImage());
-        return movieMapper.map(movieRepository.save(entity));
+        return movieMapper.map(movieRepository.save(entity), true, true);
     }
 
     @Override
@@ -97,16 +111,8 @@ public class MovieServiceImpl implements IMovieService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MovieResponse> getAll() {
+    public List<MovieResponse> getAll() throws Exception {
         return movieMapper.map(movieRepository.findAll(), true);
-    }
-
-    @Override
-    public List<MovieResponse> getByFilters(String name, String date, List<String> characters, String order) {
-        MovieFiltersRequest movieFiltersRequest = new MovieFiltersRequest(name, date, characters, order);
-        List<MovieEntity> entities = movieRepository.findAll(this.movieSpecification.getByFilters(movieFiltersRequest));
-        return this.movieMapper.map(entities, true);
-
     }
 
     @Override
@@ -119,7 +125,7 @@ public class MovieServiceImpl implements IMovieService {
             throw new Exception("The character already belongs to the movie");
         }
         characterEntitySet.add(character);
-        return movieMapper.map(movieRepository.save(movie), true);
+        return movieMapper.map(movieRepository.save(movie), true, true);
     }
 
     @Override
@@ -132,21 +138,60 @@ public class MovieServiceImpl implements IMovieService {
             throw new Exception("The character does not belong to the movie");
         }
         characterEntitySet.remove(character);
-        return movieMapper.map(movieRepository.save(movie), true);
-    }
-
-    public List<MovieResponse> findByTitle(String title) throws EntityNotFoundException{
-        return movieMapper.map(movieRepository.findByTitleAndSoftDeleteFalse(title));
+        return movieMapper.map(movieRepository.save(movie), true, false);
     }
 
     @Override
     @Transactional
     public MovieResponse addGenre(String idMovie, String idGenre) throws Exception {
         MovieEntity movie = getByIdAndSoftDeleteFalse(idMovie);
-        movie.setGenre(genreService.getByIdAndSoftDeleteFalse(idGenre));
-        return movieMapper.map(movieRepository.save(movie));
+        GenreResponse genreResponse = genreMapper.map((genreService.getByIdAndSoftDeleteFalse(idGenre)));
+        movie.setGenreId(genreResponse.getId());
+        return movieMapper.map(movieRepository.save(movie), genreResponse);
     }
 
+
+    @Override
+    @Transactional
+    public List<MovieBasicResponse> getByQuery(Map<String, String> modelMap) throws Exception {
+        if (modelMap.isEmpty()) {
+            return movieMapper.mapResponse2basic(getAll());
+        }
+        List<Optional<MovieEntity>> opt = new ArrayList<>();
+        boolean order = true; //true = ASC
+        for (Map.Entry entry : modelMap.entrySet()) {
+            if (entry.getKey().toString().equalsIgnoreCase("order") &&
+                    entry.getValue().toString().equalsIgnoreCase("DESC")) {
+                order = false;
+            }
+        }
+        for (Map.Entry entry : modelMap.entrySet()) {
+            String key = entry.getKey().toString();
+            if (key.equalsIgnoreCase("title")) {
+                opt = order ? movieRepository.findByTitleAsc(entry.getValue().toString())
+                        : movieRepository.findByTitleDesc(entry.getValue().toString());
+            }
+            if (key.equalsIgnoreCase("genre")) {
+                opt = order ? movieRepository.findByGenreAsc(entry.getValue().toString())
+                        : movieRepository.findByGenreDesc(entry.getValue().toString());
+            }
+        }
+        List<MovieBasicResponse> responseList = movieMapper.mapBasic(getOptional(opt));
+        HashSet<String> withOutDuplicates = new HashSet<>();
+        responseList.removeIf(e -> !withOutDuplicates.add(e.getTittle()));
+        return responseList;
+    }
+
+    private List<MovieEntity> getOptional(List<Optional<MovieEntity>> optList) throws EntityNotFound {
+        List<MovieEntity> entityList = new ArrayList<>();
+        if (optList.isEmpty()) {
+            throw new EntityNotFound("Characters not found or disabled");
+        }
+        for (Optional<MovieEntity> opt : optList) {
+            entityList.add(opt.get());
+        }
+        return entityList;
+    }
 
     private void validateRequest(MovieRequest request) throws Exception {
         if (movieRepository.findByTitle(request.getTitle()) != null) {
@@ -154,13 +199,3 @@ public class MovieServiceImpl implements IMovieService {
         }
     }
 }
-//    @Override  //esto funciona pero lo pide por pathvariable, no por json
-//    @Transactional
-//    public MovieResponse addCharacters(AddCharacter2Movie request) throws EntityNotFoundException {
-//        MovieEntity movie = getByIdAndSoftDeleteFalse(request.getIdMovie());
-//        Set<CharacterEntity> characterEntitySet = movie.getCharacters();
-//        for (String aux : request.getIdCharacteres()) {
-//            characterEntitySet.add(characterService.getByIdAndSoftDeleteFalse(aux));
-//        }
-//        return movieMapper.map(movieRepository.save(movie),true);
-//    }

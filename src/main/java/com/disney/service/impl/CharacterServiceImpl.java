@@ -4,21 +4,20 @@ import com.disney.dto.request.CharacterRequest;
 import com.disney.dto.response.CharacterBasicResponse;
 import com.disney.dto.response.CharacterResponse;
 import com.disney.entity.CharacterEntity;
+import com.disney.exception.EntityNotFound;
 import com.disney.mapper.CharacterMapper;
 import com.disney.mapper.MovieMapper;
 import com.disney.repository.CharacterRepository;
-import com.disney.service.ICharaterService;
+import com.disney.service.ICharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-public class CharacterServiceImpl implements ICharaterService {
+public class CharacterServiceImpl implements ICharacterService {
 
     @Autowired
     CharacterRepository characterRepository;
@@ -37,14 +36,14 @@ public class CharacterServiceImpl implements ICharaterService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public CharacterResponse update(CharacterRequest request) {
+    public CharacterResponse update(CharacterRequest request) throws Exception {
         CharacterEntity entity = getByIdAndSoftDeleteFalse(request.getId());
         entity.setName(request.getName());
         entity.setAge(request.getAge());
         entity.setWeight(request.getWeight());
         entity.setHistory(request.getHistory());
         entity.setImage(request.getImage());
-        return characterMapper.map(characterRepository.save(entity));
+        return characterMapper.map(characterRepository.save(entity), true);
     }
 
     @Override
@@ -103,27 +102,63 @@ public class CharacterServiceImpl implements ICharaterService {
         return characterResponseList;
     }
 
-    @Override
-    @Transactional
-    public List<CharacterBasicResponse> getByName(String name) {
-        return characterMapper.mapBasic(characterRepository.findByName(name));
-    }
-
-    @Override
-    @Transactional
-    public List<CharacterBasicResponse> getByAge(String age) {
-        return characterMapper.mapBasic(characterRepository.findByAge(Integer.parseInt(age)));
-    }
-
-    @Override
-    @Transactional
-    public List<CharacterBasicResponse> getByMovieId(String movieId) {
-        List<String> charactersId = characterRepository.findByMovieId(movieId);
-        List<CharacterEntity> entities = new ArrayList<>();
-        for (String characterId : charactersId) {
-            entities.add(getById(characterId));
+    private List<CharacterEntity> getOptional(List<Optional<CharacterEntity>> optList) throws EntityNotFound {
+        List<CharacterEntity> entityList = new ArrayList<>();
+        if (optList.isEmpty()) {
+            throw new EntityNotFound("Characters not found or disabled");
         }
-        return characterMapper.mapBasic(entities);
+        for (Optional<CharacterEntity> opt : optList) {
+            entityList.add(opt.get());
+        }
+        return entityList;
+    }
+
+    @Override
+    @Transactional
+    public List<CharacterBasicResponse> getByName(String name) throws EntityNotFound {
+        List<Optional<CharacterEntity>> opt = characterRepository.findByName(name);
+        return characterMapper.mapBasic(getOptional(opt));
+    }
+
+    @Override
+    @Transactional
+    public List<CharacterBasicResponse> getByAge(String age) throws EntityNotFound {
+        List<Optional<CharacterEntity>> opt = characterRepository.findByAge(Integer.parseInt(age));
+        return characterMapper.mapBasic(getOptional(opt));
+    }
+
+    @Override
+    @Transactional
+    public List<CharacterBasicResponse> getByMovieId(String movieId) throws EntityNotFound {
+        List<String> charactersId = characterRepository.findByMovieId(movieId);
+        List<Optional<CharacterEntity>> entities = new ArrayList<>();
+        for (String characterId : charactersId) {
+            entities.add(Optional.ofNullable(getById(characterId)));
+        }
+        return characterMapper.mapBasic(getOptional(entities));
+    }
+
+    @Override
+    @Transactional
+    public List<CharacterBasicResponse> getByQuery(Map<String, String> modelMap) throws EntityNotFound {
+        List<CharacterBasicResponse> responseList = new ArrayList<>();
+        if (modelMap.isEmpty()) {
+            return characterMapper.mapResponse2basic(getAll());
+        }
+        for (Map.Entry entry : modelMap.entrySet()) {
+            if (entry.getKey().toString().equalsIgnoreCase("name")) {
+                responseList.addAll(getByName(entry.getValue().toString()));
+            }
+            if (entry.getKey().toString().equalsIgnoreCase("age")) {
+                responseList.addAll(getByAge(entry.getValue().toString()));
+            }
+            if (entry.getKey().toString().equalsIgnoreCase("movie")) {
+                responseList.addAll(getByMovieId(entry.getValue().toString()));
+            }
+        }
+        HashSet<String> withOutDuplicates = new HashSet<>();
+        responseList.removeIf(e -> !withOutDuplicates.add(e.getName()));
+        return responseList;
     }
 
     @Transactional(readOnly = true)

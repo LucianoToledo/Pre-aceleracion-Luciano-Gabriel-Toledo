@@ -6,17 +6,17 @@ import com.disney.dto.response.CharacterResponse;
 import com.disney.dto.response.MovieResponse;
 import com.disney.entity.CharacterEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
-import javax.xml.stream.events.Characters;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class CharacterMapper {
 
+    @Lazy
     @Autowired
-    static MovieMapper movieMapper;
+    MovieMapper movieMapper;
 
     public CharacterEntity map(CharacterRequest request) { //requestBasic to entityDto
         CharacterEntity entity = new CharacterEntity();
@@ -40,7 +40,7 @@ public class CharacterMapper {
         return response;
     }
 
-    public CharacterResponse map(CharacterEntity entity) { //entity to responseDto
+    public CharacterResponse map(CharacterEntity entity) {
         CharacterResponse response = new CharacterResponse();
         response.setId(entity.getId());
         response.setName(entity.getName());
@@ -59,7 +59,7 @@ public class CharacterMapper {
         return responseList;
     }
 
-    public List<CharacterResponse> map(List<CharacterEntity> entities, boolean loadMovies){
+    public List<CharacterResponse> map(List<CharacterEntity> entities, boolean loadMovies) throws Exception {
         List<CharacterResponse> responseList = new ArrayList<>();
         for (CharacterEntity entity : entities) {
             responseList.add(map(entity, loadMovies));
@@ -67,7 +67,7 @@ public class CharacterMapper {
         return responseList;
     }
 
-    public CharacterResponse map(CharacterEntity entity, boolean loadMovies){
+    public CharacterResponse map(CharacterEntity entity, boolean loadMovies) throws Exception {
         CharacterResponse response = map(entity);
         if (loadMovies){
             List<MovieResponse> movieResponses = movieMapper.map(entity.getMovies(),false);
@@ -80,6 +80,7 @@ public class CharacterMapper {
         CharacterBasicResponse response = new CharacterBasicResponse();
         response.setName(entity.getName());
         response.setImage(entity.getImage());
+        response.setAge(entity.getAge().toString());
         return response;
     }
 
@@ -89,5 +90,21 @@ public class CharacterMapper {
             responseList.add(mapBasic(entity));
         }
         return responseList;
+    }
+
+    public CharacterBasicResponse mapResponse2basic(CharacterResponse response){
+        CharacterBasicResponse basicResponse = new CharacterBasicResponse();
+        basicResponse.setName(response.getName());
+        basicResponse.setImage(response.getImage());
+        basicResponse.setAge(response.getAge().toString());
+        return basicResponse;
+    }
+
+    public List<CharacterBasicResponse> mapResponse2basic(List<CharacterResponse> responseList){
+        List<CharacterBasicResponse> basicResponses = new ArrayList<>();
+        for (CharacterResponse response:responseList) {
+            basicResponses.add(mapResponse2basic(response));
+        }
+        return basicResponses;
     }
 }
