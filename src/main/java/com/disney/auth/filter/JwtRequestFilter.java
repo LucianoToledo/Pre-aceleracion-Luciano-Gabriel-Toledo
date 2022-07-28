@@ -27,13 +27,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private AuthenticationManager authenticationManager;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
         }
@@ -42,12 +43,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authReq =
                         new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
+
                 Authentication auth = authenticationManager.authenticate(authReq);
-                //Set auth in context
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                SecurityContextHolder.getContext().setAuthentication(auth);  //Set auth in context
             }
         }
-        filterChain.doFilter(request, response);
-        //chain.doFilter(request, response); así estaba en los videos, investigar !!
+        chain.doFilter(request, response);
     }
 }

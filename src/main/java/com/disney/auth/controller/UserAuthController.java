@@ -18,42 +18,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 public class UserAuthController {
+    @Autowired
     private UserDetailsCustomService userDetailsService;
+    @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
     private JwtUtils jwtTokenUtil;
 
-    @Autowired
-    public UserAuthController(
-            UserDetailsCustomService userDetailsServicer,
-            AuthenticationManager authenticationManager,
-            JwtUtils jwtTokenutil) {
-        this.userDetailsService = userDetailsService;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenUtil = jwtTokenUtil;
-    }
+//    @Autowired
+//    public UserAuthController(UserDetailsCustomService userDetailsServicer,
+//            AuthenticationManager authenticationManager,
+//            JwtUtils jwtTokenutil) {
+//        this.userDetailsService = userDetailsService;
+//        this.authenticationManager = authenticationManager;
+//        this.jwtTokenUtil = jwtTokenUtil;
+//    }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> singUp(@RequestBody UserDTO userRequest) throws Exception {
-        this.userDetailsService.save(userRequest);
+        userDetailsService.save(userRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //TODO: pasar la logica de este controlador a un servicio, los controladores no deberian tener logica por una cuestion de responsabilidad
-    @PostMapping("/singin")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> singIn(@RequestBody AuthenticationRequest authRequest) throws Exception {
-        UserDetails userDetails;
-        try {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-            userDetails = (UserDetails) auth.getPrincipal();
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or pasword");
-        }
-        final String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(userDetailsService.login(authRequest));
     }
 }
 

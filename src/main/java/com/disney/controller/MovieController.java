@@ -111,20 +111,3 @@ public class MovieController {
         }
     }
 }
-
-
-//    @GetMapping
-//    public ResponseEntity<List<MovieResponse>> getDetailsByFilters(
-//            @RequestParam(required = false) String title,
-//            @RequestParam(required = false) String date,
-//            @RequestParam(required = false) List<String> characters,
-//            @RequestParam(required = false, defaultValue = "ASC") String order) {
-//        List<MovieResponse> responses = iMovieService.getByFilters(title, date, characters, order);
-//        return ResponseEntity.ok(responses);
-//    }
-
-
-//    @GetMapping("/title")
-//    public ResponseEntity<List<MovieBasicResponse>> getByTitle(@RequestParam String title) {
-//        return ResponseEntity.ok().body(iMovieService.findByTitle(title));
-//    }
