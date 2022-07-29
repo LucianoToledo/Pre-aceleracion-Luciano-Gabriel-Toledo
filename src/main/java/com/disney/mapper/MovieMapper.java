@@ -1,10 +1,7 @@
 package com.disney.mapper;
 
 import com.disney.dto.request.MovieRequest;
-import com.disney.dto.response.CharacterResponse;
-import com.disney.dto.response.GenreResponse;
-import com.disney.dto.response.MovieBasicResponse;
-import com.disney.dto.response.MovieResponse;
+import com.disney.dto.response.*;
 import com.disney.entity.CharacterEntity;
 import com.disney.entity.MovieEntity;
 import com.disney.service.impl.GenreServiceImpl;
@@ -83,18 +80,27 @@ public class MovieMapper {
         return response;
     }
 
-    public MovieBasicResponse mapBasic(MovieEntity entity) {
+    public MovieBasicResponse mapBasic(MovieEntity entity,boolean loadCharacter, boolean loadGenre) throws Exception {
         MovieBasicResponse response = new MovieBasicResponse();
         response.setTittle(entity.getTitle());
         response.setImage(entity.getImage());
         response.setCreationDate(entity.getCreationDate().toString());
+        if (loadCharacter) {
+            List<CharacterEntity> characterEntities = new ArrayList<>(entity.getCharacters());
+            List<CharacterBasicResponse> characterResponses = characterMapper.mapBasic(characterEntities);
+            response.setCharacterResponsesList(characterResponses);
+        }
+        if (loadGenre) {
+            GenreResponse genreResponse = genreMapper.map(genreService.getById(entity.getGenreId()));
+            response.setGenreResponse(genreResponse);
+        }
         return response;
     }
 
-    public List<MovieBasicResponse> mapBasic(List<MovieEntity> entityList) {
+    public List<MovieBasicResponse> mapBasic(List<MovieEntity> entityList,boolean loadCharacter, boolean loadGenre) throws Exception {
         List<MovieBasicResponse> responseList = new ArrayList<>();
         for (MovieEntity entity : entityList) {
-            responseList.add(mapBasic(entity));
+            responseList.add(mapBasic(entity, loadCharacter, loadGenre));
         }
         return responseList;
     }
