@@ -15,8 +15,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.mail.MessagingException;
 import java.util.Collections;
 
@@ -38,6 +39,7 @@ public class UserDetailsCustomService implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByUsername(username);
@@ -50,7 +52,7 @@ public class UserDetailsCustomService implements UserDetailsService {
     public boolean save(UserDTO userDTO) throws MessagingException {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(userDTO.getUsername());
-        userEntity.setPassword(userDTO.getPassword());
+        userEntity.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         if (userEntity != null) {
             emailService.sendMail(userMapper.map(userEntity.getUsername()));
         }

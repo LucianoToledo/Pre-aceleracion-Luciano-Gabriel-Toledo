@@ -13,8 +13,8 @@ public interface IGenreService {
     GenreResponse save(GenreRequest request);
 
     GenreResponse update(GenreRequest request) throws Exception;
-    void enableGenre(String id) throws Exception;
-    void disableGenre(String id) throws Exception;
+    GenreResponse enableGenre(String id) throws Exception;
+    GenreResponse disableGenre(String id) throws Exception;
     GenreEntity getByIdAndSoftDeleteFalse(String id) throws Exception;
 
     GenreEntity getById(String id) throws Exception;

@@ -3,14 +3,15 @@ package com.disney.controller;
 import com.disney.dto.request.MovieRequest;
 import com.disney.dto.response.MovieBasicResponse;
 import com.disney.dto.response.MovieResponse;
+import com.disney.exception.EntityNotFound;
 import com.disney.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 @RestController
 @RequestMapping("/movie")
@@ -27,7 +28,7 @@ public class MovieController {
     @PutMapping("/update")
     public ResponseEntity<MovieResponse> update(@RequestBody MovieRequest request) {
         try {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(iMovieService.update(request));
+            return ResponseEntity.status(HttpStatus.OK).body(iMovieService.update(request));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -90,33 +91,19 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieBasicResponse>> getByFilters(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Set<String> character,
-            @RequestParam(required = false, defaultValue = "ASC") String order) {
-        List<MovieBasicResponse> dtoList = null;
+    public ResponseEntity<List<MovieBasicResponse>> getByQuery(HttpServletRequest query) {
         try {
-            dtoList = this.iMovieService.getByFilters(name, character, order);
+            Enumeration enumeration = query.getParameterNames();
+            Map<String, String> modelMap = new HashMap<>();
+            while (enumeration.hasMoreElements()) {
+                String parameterName = (String) enumeration.nextElement();
+                modelMap.put(parameterName, query.getParameter(parameterName));
+            }
+            return ResponseEntity.ok().body(iMovieService.getByQuery(modelMap));
+        } catch (EntityNotFound e) {
+            throw new RuntimeException(e);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.ok(dtoList);
     }
-
-//    @GetMapping
-//    public ResponseEntity<List<MovieBasicResponse>> getByQuery(HttpServletRequest query) {
-//        try {
-//            Enumeration enumeration = query.getParameterNames();
-//            Map<String, String> modelMap = new HashMap<>();
-//            while (enumeration.hasMoreElements()) {
-//                String parameterName = (String) enumeration.nextElement();
-//                modelMap.put(parameterName, query.getParameter(parameterName));
-//            }
-//            return ResponseEntity.ok().body(iMovieService.getByQuery(modelMap));
-//        } catch (EntityNotFound e) {
-//            throw new RuntimeException(e);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 }

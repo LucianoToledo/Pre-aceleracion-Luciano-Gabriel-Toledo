@@ -34,7 +34,7 @@ public class MovieSpecification {
 //            }
 
             if (!CollectionUtils.isEmpty(filtersRequest.getCharacters())) {
-                Join<CharacterEntity, MovieEntity> join = root.join("characters", JoinType.INNER);
+                Join<CharacterEntity, MovieEntity> join = root.join("movieCharacters", JoinType.INNER);
                 Expression<String> charactersId = join.get("id");
                 predicates.add(charactersId.in(filtersRequest.getCharacters()));
             }

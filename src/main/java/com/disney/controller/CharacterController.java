@@ -43,23 +43,21 @@ public class CharacterController {
     }
 
     @PutMapping("/enable/{id}")
-    public ResponseEntity<Void> enable(@PathVariable String id) {
+    public ResponseEntity<CharacterResponse> enable(@PathVariable String id) {
         try {
-            iCharacterService.enableCharacter(id);
+            return ResponseEntity.status(HttpStatus.OK).body(iCharacterService.enableCharacter(id));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/disable/{id}")
-    public ResponseEntity<Void> disable(@PathVariable String id) {
+    public ResponseEntity<CharacterResponse> disable(@PathVariable String id) {
         try {
-            iCharacterService.disableCharacter(id);
+            return ResponseEntity.status(HttpStatus.OK).body(iCharacterService.disableCharacter(id));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/allDetails")

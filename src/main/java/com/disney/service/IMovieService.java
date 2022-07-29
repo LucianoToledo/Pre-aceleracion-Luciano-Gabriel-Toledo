@@ -37,8 +37,8 @@ public interface IMovieService {
     MovieResponse addGenre(String idMovie, String idGenre) throws Exception;
 
 
-   // List<MovieBasicResponse> getByQuery(Map<String, String> modelMap) throws Exception;
-   List<MovieBasicResponse> getByFilters(String title, Set<String> characters, String order) throws Exception;
+   List<MovieBasicResponse> getByQuery(Map<String, String> modelMap) throws Exception;
+   //List<MovieBasicResponse> getByFilters(String title, Set<String> characters, String order) throws Exception;
 
 }
     //List<MovieResponse> getByFilters(String name, String date, List<String> characters, String order) throws Exception;

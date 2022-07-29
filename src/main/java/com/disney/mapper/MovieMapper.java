@@ -6,6 +6,7 @@ import com.disney.entity.CharacterEntity;
 import com.disney.entity.MovieEntity;
 import com.disney.service.impl.GenreServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -85,12 +86,12 @@ public class MovieMapper {
         response.setTittle(entity.getTitle());
         response.setImage(entity.getImage());
         response.setCreationDate(entity.getCreationDate().toString());
-        if (loadCharacter) {
+        if (loadCharacter && entity.getCharacters() != null) {
             List<CharacterEntity> characterEntities = new ArrayList<>(entity.getCharacters());
             List<CharacterBasicResponse> characterResponses = characterMapper.mapBasic(characterEntities);
             response.setCharacterResponsesList(characterResponses);
         }
-        if (loadGenre) {
+        if (loadGenre && entity.getGenreId() != null) {
             GenreResponse genreResponse = genreMapper.map(genreService.getById(entity.getGenreId()));
             response.setGenreResponse(genreResponse);
         }

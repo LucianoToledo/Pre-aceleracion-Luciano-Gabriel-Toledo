@@ -15,9 +15,9 @@ public interface ICharacterService {
 
     CharacterResponse update(CharacterRequest request) throws Exception;
 
-    void enableCharacter(String id) throws Exception;
+    CharacterResponse enableCharacter(String id) throws Exception;
 
-    void disableCharacter(String id) throws Exception;
+    CharacterResponse disableCharacter(String id) throws Exception;
 
     CharacterEntity getByIdAndSoftDeleteFalse(String id) throws EntityNotFoundException;
 

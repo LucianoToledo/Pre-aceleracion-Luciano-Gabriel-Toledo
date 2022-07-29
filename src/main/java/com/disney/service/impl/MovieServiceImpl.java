@@ -1,6 +1,5 @@
 package com.disney.service.impl;
 
-import com.disney.dto.request.MovieFiltersRequest;
 import com.disney.dto.request.MovieRequest;
 import com.disney.dto.response.GenreResponse;
 import com.disney.dto.response.MovieBasicResponse;
@@ -67,7 +66,8 @@ public class MovieServiceImpl implements IMovieService {
         entity.setTitle(request.getTitle());
         entity.setRanking(request.getRanking());
         entity.setImage(request.getImage());
-        return movieMapper.map(movieRepository.save(entity), true, true);
+        movieRepository.save(entity);
+        return movieMapper.map(entity, false, false);
     }
 
     @Override
@@ -153,47 +153,47 @@ public class MovieServiceImpl implements IMovieService {
         return movieMapper.map(movieRepository.save(movie), genreResponse);
     }
 
-    public List<MovieBasicResponse> getByFilters(String title, Set<String> characters, String order) throws Exception {
-        MovieFiltersRequest movieFilters = new MovieFiltersRequest(title, characters, order);
-        List<MovieEntity> entityList = movieRepository.findAll(movieSpecification.getByFilters(movieFilters));
-        return movieMapper.mapBasic(entityList, true, true);
-    }
-
-//    @Override
-//    @Transactional
-//    public List<MovieBasicResponse> getByQuery(Map<String, String> modelMap) throws Exception {
-//        if (modelMap.isEmpty()) {
-//            return movieMapper.mapResponse2basic(getAll());
-//        }
-//        List<Optional<MovieEntity>> opt = new ArrayList<>();
-//        boolean order = true; //true = ASC
-//        for (Map.Entry entry : modelMap.entrySet()) {
-//            if (entry.getKey().toString().equalsIgnoreCase("order") &&
-//                    entry.getValue().toString().equalsIgnoreCase("DESC")) {
-//                order = false;
-//            }
-//        }
-//        for (Map.Entry entry : modelMap.entrySet()) {
-//            String key = entry.getKey().toString();
-//            if (key.equalsIgnoreCase("title")) {
-//                opt = order ? movieRepository.findByTitleAsc(entry.getValue().toString())
-//                        : movieRepository.findByTitleDesc(entry.getValue().toString());
-//            }
-//            if (key.equalsIgnoreCase("genre")) {
-//                opt = order ? movieRepository.findByGenreAsc(entry.getValue().toString())
-//                        : movieRepository.findByGenreDesc(entry.getValue().toString());
-//            }
-//        }
-//        List<MovieBasicResponse> responseList = movieMapper.mapBasic(getOptional(opt));
-//        HashSet<String> withOutDuplicates = new HashSet<>();
-//        responseList.removeIf(e -> !withOutDuplicates.add(e.getTittle()));
-//        return responseList;
+//    public List<MovieBasicResponse> getByFilters(String title, Set<String> characters, String order) throws Exception {
+//        MovieFiltersRequest movieFilters = new MovieFiltersRequest(title, characters, order);
+//        List<MovieEntity> entityList = movieRepository.findAll(movieSpecification.getByFilters(movieFilters));
+//        return movieMapper.mapBasic(entityList, true, true);
 //    }
+
+    @Override
+    @Transactional
+    public List<MovieBasicResponse> getByQuery(Map<String, String> modelMap) throws Exception {
+        if (modelMap.isEmpty()) {
+            return movieMapper.mapResponse2basic(getAll());
+        }
+        List<Optional<MovieEntity>> opt = new ArrayList<>();
+        boolean order = true; //true = ASC
+        for (Map.Entry entry : modelMap.entrySet()) {
+            if (entry.getKey().toString().equalsIgnoreCase("order") &&
+                    entry.getValue().toString().equalsIgnoreCase("DESC")) {
+                order = false;
+            }
+        }
+        for (Map.Entry entry : modelMap.entrySet()) {
+            String key = entry.getKey().toString();
+            if (key.equalsIgnoreCase("title")) {
+                opt = order ? movieRepository.findByTitleAsc(entry.getValue().toString())
+                        : movieRepository.findByTitleDesc(entry.getValue().toString());
+            }
+            if (key.equalsIgnoreCase("genre")) {
+                opt = order ? movieRepository.findByGenreAsc(entry.getValue().toString())
+                        : movieRepository.findByGenreDesc(entry.getValue().toString());
+            }
+        }
+        List<MovieBasicResponse> responseList = movieMapper.mapBasic(getOptional(opt), false, false);
+        HashSet<String> withOutDuplicates = new HashSet<>();
+        responseList.removeIf(e -> !withOutDuplicates.add(e.getTittle()));
+        return responseList;
+    }
 
     private List<MovieEntity> getOptional(List<Optional<MovieEntity>> optList) throws EntityNotFound {
         List<MovieEntity> entityList = new ArrayList<>();
         if (optList.isEmpty()) {
-            throw new EntityNotFound("Characters not found or disabled");
+            throw new EntityNotFound("Movie/s not found or disabled");
         }
         for (Optional<MovieEntity> opt : optList) {
             entityList.add(opt.get());
