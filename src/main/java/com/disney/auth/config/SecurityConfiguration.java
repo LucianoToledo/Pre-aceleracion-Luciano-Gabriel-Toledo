@@ -39,9 +39,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    protected void configure(HttpSecurity httpSecurity) throws Exception { //TODO: agregar los endpoint a la seguridad
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("/auth/*", "/movie/*").permitAll()
+                .authorizeRequests().antMatchers("/auth/*", "/movie/*","/character/*", "/genre/*").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
                 .and().sessionManagement()

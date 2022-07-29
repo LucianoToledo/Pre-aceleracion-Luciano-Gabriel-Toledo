@@ -30,15 +30,6 @@ public class UserAuthController {
     @Autowired
     private JwtUtils jwtTokenUtil;
 
-//    @Autowired
-//    public UserAuthController(UserDetailsCustomService userDetailsServicer,
-//            AuthenticationManager authenticationManager,
-//            JwtUtils jwtTokenutil) {
-//        this.userDetailsService = userDetailsService;
-//        this.authenticationManager = authenticationManager;
-//        this.jwtTokenUtil = jwtTokenUtil;
-//    }
-
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> singUp(@RequestBody UserDTO userRequest) throws Exception {
         userDetailsService.save(userRequest);

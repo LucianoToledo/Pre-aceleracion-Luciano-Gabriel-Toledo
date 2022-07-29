@@ -42,7 +42,7 @@ public class MovieServiceImpl implements IMovieService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public MovieResponse save(MovieRequest request) throws Exception {
+    public MovieResponse save(MovieRequest request) throws Exception { //todo: crear un personaje nuevo y asociarlo
         validateRequest(request);
         MovieEntity entity = movieMapper.map(request);
         entity.setCharacters(addCharacters(request.getIdCharacters()));

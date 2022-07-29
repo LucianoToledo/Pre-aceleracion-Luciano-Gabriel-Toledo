@@ -44,7 +44,7 @@ public class MovieSpecification {
             query.distinct(true);
 
             //Order resolver
-            String orderByField = "denominacion";
+            String orderByField = "denominacion"; //es el parametro por el que se va a ordenar
             query.orderBy(filtersRequest.isASC() ?
                     criteriaBuilder.asc(root.get(orderByField)) :
                     criteriaBuilder.desc(root.get(orderByField))
