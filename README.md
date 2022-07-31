@@ -11,7 +11,7 @@ https://documenter.getpostman.com/view/21085820/UzXPxGtJ
 
 **About me**
 
-I'm Luciano Gabriel Toledo from Mendoza, Argentina, I'm 22 years old and I'm trainee Java Developer.I'm currently studying Information Systems Engineering
+I'm Luciano Gabriel Toledo from Mendoza, Argentina, I'm 22 years old and I'm trainee Java Developer. I'm currently studying Information Systems Engineering
 
 *Email:* toledolucianogabriel@gmail.com
 
