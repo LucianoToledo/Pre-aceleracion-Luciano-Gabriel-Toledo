@@ -18,29 +18,39 @@ public class GenreController {
     private IGenreService iGenreService;
 
     @PostMapping("/save")
-    public ResponseEntity<GenreResponse> save(@RequestBody GenreRequest request){
+    public ResponseEntity<GenreResponse> save(@RequestBody GenreRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(iGenreService.save(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<GenreResponse> update(@RequestBody GenreRequest request) throws Exception {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(iGenreService.update(request));
+    public ResponseEntity<GenreResponse> update(@RequestBody GenreRequest request){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(iGenreService.update(request));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PutMapping("/enable/{id}")
-    public ResponseEntity<Void> enable(@PathVariable String id) throws Exception {
-        iGenreService.enableGenre(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<GenreResponse> enable(@PathVariable String id)  {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(iGenreService.enableGenre(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PutMapping("/disable/{id}")
-    public ResponseEntity<Void> disable(@PathVariable String id) throws Exception {
-        iGenreService.disableGenre(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<GenreResponse> disable(@PathVariable String id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(iGenreService.disableGenre(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<GenreResponse>> getAll(){
+    public ResponseEntity<List<GenreResponse>> getAll() {
         return ResponseEntity.ok().body(iGenreService.getAllGenres());
     }
 }

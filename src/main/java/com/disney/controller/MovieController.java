@@ -1,7 +1,6 @@
 package com.disney.controller;
 
 import com.disney.dto.request.MovieRequest;
-import com.disney.dto.response.CharacterBasicResponse;
 import com.disney.dto.response.MovieBasicResponse;
 import com.disney.dto.response.MovieResponse;
 import com.disney.exception.EntityNotFound;
@@ -12,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/movie")
@@ -32,7 +28,7 @@ public class MovieController {
     @PutMapping("/update")
     public ResponseEntity<MovieResponse> update(@RequestBody MovieRequest request) {
         try {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(iMovieService.update(request));
+            return ResponseEntity.status(HttpStatus.OK).body(iMovieService.update(request));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -111,20 +107,3 @@ public class MovieController {
         }
     }
 }
-
-
-//    @GetMapping
-//    public ResponseEntity<List<MovieResponse>> getDetailsByFilters(
-//            @RequestParam(required = false) String title,
-//            @RequestParam(required = false) String date,
-//            @RequestParam(required = false) List<String> characters,
-//            @RequestParam(required = false, defaultValue = "ASC") String order) {
-//        List<MovieResponse> responses = iMovieService.getByFilters(title, date, characters, order);
-//        return ResponseEntity.ok(responses);
-//    }
-
-
-//    @GetMapping("/title")
-//    public ResponseEntity<List<MovieBasicResponse>> getByTitle(@RequestParam String title) {
-//        return ResponseEntity.ok().body(iMovieService.findByTitle(title));
-//    }

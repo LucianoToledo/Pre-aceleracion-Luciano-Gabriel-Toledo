@@ -35,23 +35,23 @@ public class GenreServiceImpl implements IGenreService {
     }
 
     @Override
-    public void enableGenre(String id) throws Exception {
+    public GenreResponse enableGenre(String id) throws Exception {
         GenreEntity entity = getById(id);
         if (entity.isEnabled()) {
             throw new Exception("Genre is already enable");
         }
         entity.setSoftDelete(false);
-        genreRepository.save(entity);
+        return genreMapper.map(genreRepository.save(entity));
     }
 
     @Override
-    public void disableGenre(String id) throws Exception {
+    public GenreResponse disableGenre(String id) throws Exception {
         GenreEntity entity = getById(id);
         if (!entity.isEnabled()) {
             throw new Exception("Genre is already disable");
         }
         entity.setSoftDelete(true);
-        genreRepository.save(entity);
+        return genreMapper.map(genreRepository.save(entity));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class GenreServiceImpl implements IGenreService {
     public GenreEntity getById(String id) throws Exception {
         Optional<GenreEntity> opt = genreRepository.findById(id);
         if (opt.isEmpty()) {
-            throw new Exception("Genre not found or disable");
+            throw new Exception("Genre not found");
         }
         return opt.get();
     }
@@ -79,7 +79,7 @@ public class GenreServiceImpl implements IGenreService {
     @Override
     public GenreEntity getByNameAndSoftDeleteFalse(String name) {
         Optional<GenreEntity> opt = Optional.ofNullable(genreRepository.findByNameAndSoftDeleteFalse(name));
-        if (opt.isEmpty()){
+        if (opt.isEmpty()) {
             throw new EntityNotFoundException("Genre not found or disable");
         }
         return opt.get();

@@ -14,8 +14,6 @@ import javax.persistence.*;
 @Table(name = "genre")
 @Getter
 @Setter
-@SQLDelete(sql="UPDATE genre SET soft_delete = true WHERE id=?")
-@Where(clause = "soft_delete=false")
 public class GenreEntity {
 
     @Id

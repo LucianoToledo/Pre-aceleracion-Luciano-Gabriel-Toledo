@@ -48,24 +48,25 @@ public class CharacterServiceImpl implements ICharacterService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public void enableCharacter(String id) throws Exception {
+    public CharacterResponse enableCharacter(String id) throws Exception {
         CharacterEntity entity = getById(id);
         if (entity.isEnabled()) {
             throw new Exception("character is already enable");
         }
         entity.setSoftDelete(false);
-        characterRepository.save(entity);
+        return characterMapper.map(characterRepository.save(entity));
+
     }
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public void disableCharacter(String id) throws Exception {
+    public CharacterResponse disableCharacter(String id) throws Exception {
         CharacterEntity entity = getById(id);
         if (!entity.isEnabled()) {
             throw new Exception("character is already disable");
         }
         entity.setSoftDelete(true);
-        characterRepository.save(entity);
+        return characterMapper.map(characterRepository.save(entity));
     }
 
     @Override
